@@ -1,7 +1,7 @@
 import User from "../model/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { tokenCookieOptions } from "../middleware/middleware.js";
+import { tokenCookieOptions, TOKEN_EXPIRY } from "../middleware/middleware.js";
 
 export const signIn = async (req, res, next) => {
   const { email, password } = req.body;
@@ -18,7 +18,7 @@ export const signIn = async (req, res, next) => {
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
+      expiresIn: TOKEN_EXPIRY,
     });
 
     res.cookie("token", token, tokenCookieOptions);
@@ -47,7 +47,7 @@ export const signUp = async (req, res, next) => {
     await newUser.save();
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
+      expiresIn: TOKEN_EXPIRY,
     });
 
     res.cookie("token", token, tokenCookieOptions);
