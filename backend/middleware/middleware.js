@@ -1,10 +1,13 @@
 import jwt from "jsonwebtoken";
 
+export const TOKEN_EXPIRY = "1d";
+export const TOKEN_MAX_AGE_MS = 1000 * 60 * 60 * 24;
+
 export const tokenCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "strict",
-  maxAge: 1000 * 60 * 60 * 24 * 30,
+  maxAge: TOKEN_MAX_AGE_MS,
 };
 
 const getTokenFromRequest = (req) => {
@@ -24,7 +27,7 @@ export const verifyToken = (req, res, next) => {
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.id;
     next();
